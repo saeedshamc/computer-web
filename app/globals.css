@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --foreground-rgb: 36, 41, 46;
+    /* dark slate */
+    --background-rgb: 248, 250, 252;
+    /* slate-50 */
+    --surface-rgb: 255, 255, 255;
+    /* white */
+    --primary-rgb: 37, 99, 235;
+    /* blue-600 */
+    --secondary-rgb: 100, 116, 139;
+    /* slate-500 */
+    --accent-rgb: 245, 158, 11;
+    /* amber-500 */
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --foreground-rgb: 255, 255, 255;
+        --background-rgb: 30, 41, 59;
+        /* slate-800 */
+        --surface-rgb: 51, 65, 85;
+        /* slate-700 */
+        --primary-rgb: 96, 165, 250;
+        /* blue-400 */
+        --secondary-rgb: 148, 163, 184;
+        /* slate-400 */
+        --accent-rgb: 253, 224, 71;
+        /* yellow-300 */
+    }
+}
+
+body {
+    color: rgb(var(--foreground-rgb));
+    background: rgb(var(--background-rgb));
+}
+
+/* Performance optimizations */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* Loading animations */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* Smooth transitions */
+.transition-all {
+    transition: all 0.3s ease;
+}
+
+@keyframes bounce-fast {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    20% {
+        transform: translateY(-8px);
+    }
+
+    40% {
+        transform: translateY(0);
+    }
+
+    60% {
+        transform: translateY(-4px);
+    }
+
+    80% {
+        transform: translateY(0);
+    }
+}
+
+.animate-bounce-fast {
+    animation: bounce-fast 0.5s;
+}
+
+@layer components {
+    .btn-primary {
+        @apply bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors;
+    }
+
+    .btn-secondary {
+        @apply bg-secondary text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors;
+    }
+
+    .input-field {
+        @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent;
+    }
+
+    /* Loading skeleton */
+    .skeleton {
+        @apply animate-pulse bg-gray-200 rounded;
+    }
+
+    /* Optimized loading spinner */
+    .loading-spinner {
+        @apply animate-spin rounded-full border-2 border-gray-300 border-t-blue-600;
+    }
+}
