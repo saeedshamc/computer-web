@@ -225,7 +225,7 @@ export default function Dashboard() {
             // فقط لپ‌تاپ‌های زیرمجموعه‌های انتخاب‌شده
             return products.filter(product =>
                 product.category === 'laptop' &&
-                selectedLaptopSubs.includes(product.subcategory) &&
+                !!product.subcategory && selectedLaptopSubs.includes(product.subcategory) &&
                 (
                     product.name.toLowerCase().includes(search.toLowerCase()) ||
                     product.description.toLowerCase().includes(search.toLowerCase())
@@ -359,7 +359,7 @@ export default function Dashboard() {
     }
 
     // تابع تشخیص برند cpu
-    const getCpuBrand = (product) => {
+    const getCpuBrand = (product: Product) => {
         const name = product.name.toLowerCase()
         if (name.includes('intel')) return 'intel'
         if (name.includes('amd')) return 'amd'
@@ -489,6 +489,7 @@ export default function Dashboard() {
                             <div className="absolute right-0 left-0 mt-2 bg-white border border-primary rounded-lg shadow-lg z-20 max-h-60 overflow-y-auto animate-fade-in">
                                 <div className="flex flex-col p-2 gap-1">
                                     <select
+                                        aria-label="فیلتر دسته‌بندی محصولات"
                                         value={selectedCategories[0] || ''}
                                         onChange={e => setSelectedCategories(e.target.value ? [e.target.value] : [])}
                                         className="input-field max-w-md w-full text-sm sm:text-base text-gray-900 pr-4 pl-10 border border-primary rounded-lg focus:ring-2 focus:ring-primary shadow-sm"

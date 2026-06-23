@@ -66,7 +66,12 @@ export default function Header({ onCartClick, onProfileClick, onHomeClick, cartI
                         </div>
                         {/* Hamburger for mobile */}
                         <div className="flex sm:hidden">
-                            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-primary focus:outline-none">
+                            <button
+                                type="button"
+                                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                                className="text-primary focus:outline-none"
+                                aria-label={mobileMenuOpen ? 'بستن منو' : 'باز کردن منو'}
+                            >
                                 <FaBars className="h-6 w-6" />
                             </button>
                         </div>
@@ -241,8 +246,10 @@ export default function Header({ onCartClick, onProfileClick, onHomeClick, cartI
                 <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center">
                     <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full relative">
                         <button
+                            type="button"
                             onClick={() => setShowAbout(false)}
                             className="absolute top-2 left-2 text-gray-500 hover:text-gray-700 text-xl"
+                            aria-label="بستن"
                         >
                             <FaTimes />
                         </button>

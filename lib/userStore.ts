@@ -44,7 +44,7 @@ export class UserStore {
         }
     }
 
-    async createUser(userData: Omit<User, '_id' | 'createdAt'>): Promise<User> {
+    async createUser(userData: Omit<User, '_id' | 'createdAt' | 'role'> & { role?: User['role'] }): Promise<User> {
         const existingUser = this.users.find(u => u.email === userData.email)
         if (existingUser) {
             throw new Error('کاربری با این ایمیل قبلاً ثبت شده است')

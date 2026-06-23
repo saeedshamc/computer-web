@@ -132,10 +132,10 @@ export default function Checkout() {
                                     <div>
                                         <div className="font-semibold text-gray-800 text-sm sm:text-base">{item.product.name}</div>
                                         <div className="text-xs sm:text-sm text-gray-500 flex items-center gap-2">
-                                            <button type="button" className="p-1 text-primary hover:text-blue-700" onClick={() => updateQuantity(item.product._id, item.quantity - 1)}><FaMinus /></button>
+                                            <button type="button" aria-label="کاهش تعداد" className="p-1 text-primary hover:text-blue-700" onClick={() => updateQuantity(item.product._id, item.quantity - 1)}><FaMinus /></button>
                                             <span>{item.quantity}</span>
-                                            <button type="button" className="p-1 text-primary hover:text-blue-700" onClick={() => updateQuantity(item.product._id, item.quantity + 1)}><FaPlus /></button>
-                                            <button type="button" className="p-1 text-red-600 hover:text-red-800" onClick={() => removeFromCart(item.product._id)}><FaTrash /></button>
+                                            <button type="button" aria-label="افزایش تعداد" className="p-1 text-primary hover:text-blue-700" onClick={() => updateQuantity(item.product._id, item.quantity + 1)}><FaPlus /></button>
+                                            <button type="button" aria-label="حذف از سبد" className="p-1 text-red-600 hover:text-red-800" onClick={() => removeFromCart(item.product._id)}><FaTrash /></button>
                                         </div>
                                     </div>
                                 </div>

@@ -75,6 +75,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
                             src={product.image}
                             alt={product.name}
                             fill
+                            unoptimized
                             className="object-cover"
                             onError={() => setImageError(true)}
                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
@@ -129,6 +130,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
                             min={1}
                             max={product.stock}
                             value={quantity}
+                            aria-label="تعداد محصول"
                             onChange={e => {
                                 let val = parseInt(e.target.value) || 1
                                 if (val < 1) val = 1
@@ -210,6 +212,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
                                 <button
                                     onClick={() => setShowDetails(false)}
                                     className="text-gray-500 hover:text-gray-700"
+                                    aria-label="بستن جزئیات محصول"
                                 >
                                     <FaTimes className="h-6 w-6" />
                                 </button>
@@ -223,6 +226,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
                                             src={product.image}
                                             alt={product.name}
                                             fill
+                                            unoptimized
                                             className="object-cover"
                                             onError={() => setImageError(true)}
                                             sizes="(max-width: 768px) 100vw, 50vw"
@@ -316,6 +320,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
                                                 min={1}
                                                 max={product.stock}
                                                 value={quantity}
+                                                aria-label="تعداد محصول"
                                                 onChange={e => {
                                                     let val = parseInt(e.target.value) || 1
                                                     if (val < 1) val = 1
