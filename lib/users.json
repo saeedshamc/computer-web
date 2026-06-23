@@ -34,5 +34,14 @@
     "password": "$2a$12$rsSFXzq6rwMwLSFOJkXaU..iCH/XI/8oK0PA4hE28wrbCaJ7TXUAW",
     "createdAt": "2025-09-17T10:19:14.517Z",
     "role": "user"
+  },
+  {
+    "_id": "1782188229988",
+    "name": "arash",
+    "email": "arash@gmail.com",
+    "phone": "09101111111",
+    "password": "$2a$12$MAhnZtmdXPD6m1A8VSqDFuBHRLiSOXcqPpFrf8V5.GnkymVqHLFsa",
+    "createdAt": "2026-06-23T04:17:09.988Z",
+    "role": "user"
   }
 ]
