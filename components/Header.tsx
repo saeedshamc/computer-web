@@ -66,14 +66,29 @@ export default function Header({ onCartClick, onProfileClick, onHomeClick, cartI
                         </div>
                         {/* Hamburger for mobile */}
                         <div className="flex sm:hidden">
-                            <button
-                                type="button"
-                                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                                className="text-primary focus:outline-none"
-                                aria-label={mobileMenuOpen ? 'بستن منو' : 'باز کردن منو'}
-                            >
-                                <FaBars className="h-6 w-6" />
-                            </button>
+                            {mobileMenuOpen ? (
+                                <button
+                                    type="button"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className="text-primary focus:outline-none"
+                                    aria-label="بستن منو"
+                                    aria-expanded="true"
+                                    aria-controls="mobile-menu"
+                                >
+                                    <FaBars className="h-6 w-6" />
+                                </button>
+                            ) : (
+                                <button
+                                    type="button"
+                                    onClick={() => setMobileMenuOpen(true)}
+                                    className="text-primary focus:outline-none"
+                                    aria-label="باز کردن منو"
+                                    aria-expanded="false"
+                                    aria-controls="mobile-menu"
+                                >
+                                    <FaBars className="h-6 w-6" />
+                                </button>
+                            )}
                         </div>
                         {/* Nav buttons for desktop */}
                         <div className="hidden sm:flex items-center space-x-2 sm:space-x-4 space-x-reverse">
@@ -158,7 +173,7 @@ export default function Header({ onCartClick, onProfileClick, onHomeClick, cartI
                             {/* Overlay */}
                             <div className="fixed inset-0 bg-black bg-opacity-30 z-40" onClick={() => setMobileMenuOpen(false)}></div>
                             {/* Mobile menu dropdown */}
-                            <div className="sm:hidden flex flex-col gap-2 mt-2 bg-white rounded shadow p-4 z-50 fixed top-4 right-4 left-4 max-h-[80vh] overflow-y-auto animate-fade-in">
+                            <div id="mobile-menu" className="sm:hidden flex flex-col gap-2 mt-2 bg-white rounded shadow p-4 z-50 fixed top-4 right-4 left-4 max-h-[80vh] overflow-y-auto animate-fade-in">
                                 <div className="flex justify-end mb-2">
                                     <button onClick={() => setMobileMenuOpen(false)} className="text-gray-500 hover:text-red-600 transition-colors" aria-label="بستن منو">
                                         <FaTimes className="h-6 w-6" />
