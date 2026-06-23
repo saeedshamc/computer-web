@@ -31,6 +31,7 @@ export default function Header({ onCartClick, onProfileClick, onHomeClick, cartI
             // Clear localStorage
             localStorage.removeItem('token')
             localStorage.removeItem('user')
+            localStorage.removeItem('cart')
 
             // Redirect to login
             router.push('/login')
@@ -39,6 +40,7 @@ export default function Header({ onCartClick, onProfileClick, onHomeClick, cartI
             // Fallback: clear localStorage and redirect
             localStorage.removeItem('token')
             localStorage.removeItem('user')
+            localStorage.removeItem('cart')
             router.push('/login')
         }
     }

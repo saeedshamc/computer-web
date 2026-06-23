@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Header from '@/components/Header'
 import ProductCard from '@/components/ProductCard'
 import { FaChevronLeft, FaChevronRight, FaShoppingCart, FaUser, FaHome, FaSearch, FaChevronDown } from 'react-icons/fa'
+import { loadUserCart, saveUserCart, CartItem } from '@/lib/cartClient'
 
 interface Product {
     _id: string
@@ -16,11 +17,6 @@ interface Product {
     stock: number
     createdAt: string
     subcategory?: string
-}
-
-interface CartItem {
-    product: Product
-    quantity: number
 }
 
 export default function Dashboard() {
@@ -37,6 +33,7 @@ export default function Dashboard() {
     const dropdownRef = useRef<HTMLDivElement>(null)
     const router = useRouter()
     const [cartBounce, setCartBounce] = useState(false)
+    const [cartLoaded, setCartLoaded] = useState(false)
     const [selectedCpuBrands, setSelectedCpuBrands] = useState<string[]>([])
     const [selectedGpuBrands, setSelectedGpuBrands] = useState<string[]>([])
     const [selectedRamBrands, setSelectedRamBrands] = useState<string[]>([])
@@ -76,12 +73,17 @@ export default function Dashboard() {
         }
 
         fetchProducts()
+        loadUserCart().then(loadedCart => {
+            setCart(loadedCart)
+            setCartLoaded(true)
+        })
     }, [router])
 
-    // Save cart to localStorage whenever it changes
+    // Sync cart to server whenever it changes (after initial load)
     useEffect(() => {
-        localStorage.setItem('cart', JSON.stringify(cart));
-    }, [cart]);
+        if (!cartLoaded) return
+        saveUserCart(cart)
+    }, [cart, cartLoaded]);
 
     // Close dropdown on outside click
     useEffect(() => {

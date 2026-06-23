@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { FaPlus, FaMinus, FaTrash } from 'react-icons/fa';
+import { loadUserCart, saveUserCart, CartItem } from '@/lib/cartClient';
 
 export default function Checkout() {
-    const [cart, setCart] = useState([]);
+    const [cart, setCart] = useState<CartItem[]>([]);
     const [address, setAddress] = useState('');
     const [postalCode, setPostalCode] = useState('');
     const [phone, setPhone] = useState('');
@@ -15,7 +16,12 @@ export default function Checkout() {
     const router = useRouter();
 
     useEffect(() => {
-        // Try to get phone from user profile in localStorage
+        const token = localStorage.getItem('token');
+        if (!token) {
+            router.replace('/login');
+            return;
+        }
+
         const userData = localStorage.getItem('user');
         if (userData) {
             try {
@@ -23,33 +29,25 @@ export default function Checkout() {
                 if (user.phone) setPhone(user.phone);
             } catch { }
         }
-        // Get cart from localStorage
-        const cartData = localStorage.getItem('cart');
-        if (cartData) {
-            try {
-                setCart(JSON.parse(cartData));
-            } catch { }
-        }
-    }, []);
 
-    // Update quantity in cart
-    const updateQuantity = (productId, quantity) => {
-        if (quantity < 1) return;
-        setCart(prevCart => prevCart.map(item =>
-            item.product._id === productId ? { ...item, quantity } : item
-        ));
-        localStorage.setItem('cart', JSON.stringify(
-            cart.map(item =>
-                item.product._id === productId ? { ...item, quantity } : item
-            )
-        ));
+        loadUserCart().then(setCart);
+    }, [router]);
+
+    const syncCart = (updatedCart: CartItem[]) => {
+        setCart(updatedCart);
+        saveUserCart(updatedCart);
     };
-    // Remove item from cart
-    const removeFromCart = (productId) => {
-        setCart(prevCart => prevCart.filter(item => item.product._id !== productId));
-        localStorage.setItem('cart', JSON.stringify(
-            cart.filter(item => item.product._id !== productId)
-        ));
+
+    const updateQuantity = (productId: string, quantity: number) => {
+        if (quantity < 1) return;
+        const updatedCart = cart.map(item =>
+            item.product._id === productId ? { ...item, quantity } : item
+        );
+        syncCart(updatedCart);
+    };
+
+    const removeFromCart = (productId: string) => {
+        syncCart(cart.filter(item => item.product._id !== productId));
     };
 
     const handlePayment = (e: React.FormEvent) => {
