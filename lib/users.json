@@ -1,47 +1,20 @@
 [
   {
-    "_id": "1751174192890",
-    "name": "??? ?????",
-    "email": "test@example.com",
-    "phone": "09123456789",
-    "password": "$2a$12$SeW2doDMweOXRWWVPfURwujjmTrgdeyB0RbKS.Iclf7nWb5JpKDni",
-    "createdAt": "2025-06-29T05:16:32.890Z",
-    "role": "admin"
-  },
-  {
-    "_id": "1751174328994",
-    "name": "saaeed shamsi",
-    "email": "shamssaeed2025@gmail.com",
-    "phone": "09103203442",
-    "password": "$2a$12$yVa4fsqhqxd0EKB0xOyCoe1Uvs0rolJQMFO23zxOeMnUlBw9PF1qu",
-    "createdAt": "2025-06-29T05:18:48.994Z",
-    "role": "user"
-  },
-  {
-    "_id": "admin-saeed-1",
-    "name": "saeed admin",
-    "email": "saeed@gmail.com",
+    "_id": "admin-1",
+    "name": "مدیر فروشگاه",
+    "email": "admin@parstech.local",
     "phone": "09120000000",
     "password": "$2a$12$TLULglQlGbFxHYPeEco2Eu8HuUrHDU3.ZUFnMP0IOuJm1NZU23Xui",
     "createdAt": "2025-07-01T00:00:00.000Z",
     "role": "admin"
   },
   {
-    "_id": "1758104354516",
-    "name": " saeed",
-    "email": "shamssaeed2024@gmail.com",
-    "phone": "09222880712",
-    "password": "$2a$12$rsSFXzq6rwMwLSFOJkXaU..iCH/XI/8oK0PA4hE28wrbCaJ7TXUAW",
-    "createdAt": "2025-09-17T10:19:14.517Z",
-    "role": "user"
-  },
-  {
-    "_id": "1782188229988",
-    "name": "arash",
-    "email": "arash@gmail.com",
-    "phone": "09101111111",
-    "password": "$2a$12$MAhnZtmdXPD6m1A8VSqDFuBHRLiSOXcqPpFrf8V5.GnkymVqHLFsa",
-    "createdAt": "2026-06-23T04:17:09.988Z",
+    "_id": "user-demo-1",
+    "name": "کاربر نمونه",
+    "email": "user@example.com",
+    "phone": "09121111111",
+    "password": "$2a$12$yVa4fsqhqxd0EKB0xOyCoe1Uvs0rolJQMFO23zxOeMnUlBw9PF1qu",
+    "createdAt": "2025-06-29T05:18:48.994Z",
     "role": "user"
   }
 ]

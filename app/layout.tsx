@@ -1,12 +1,13 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import { STORE_NAME, STORE_TAGLINE } from '@/lib/brand'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-    title: 'فروشگاه قطعات کامپیوتر',
-    description: 'بهترین قطعات کامپیوتر با قیمت مناسب',
+    title: STORE_NAME,
+    description: STORE_TAGLINE,
 }
 
 export default function RootLayout({
@@ -22,4 +23,4 @@ export default function RootLayout({
             <body className={inter.className}>{children}</body>
         </html>
     )
-} 
+}

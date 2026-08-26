@@ -16,11 +16,19 @@ export default function Login() {
     const [activeTab, setActiveTab] = useState<'user' | 'admin'>('user')
     const router = useRouter()
 
+    const getRedirectPath = () => {
+        if (typeof window === 'undefined') return '/'
+        const redirect = new URLSearchParams(window.location.search).get('redirect')
+        if (redirect && redirect.startsWith('/') && !redirect.startsWith('//')) {
+            return redirect
+        }
+        return '/'
+    }
+
     useEffect(() => {
-        // Check if user is already logged in
         const token = localStorage.getItem('token')
         if (token) {
-            router.replace('/dashboard')
+            router.replace(getRedirectPath())
         }
     }, [router])
 
@@ -41,24 +49,20 @@ export default function Login() {
             const data = await response.json()
 
             if (response.ok) {
-                // Store token in localStorage for client-side access
                 localStorage.setItem('token', data.token)
                 localStorage.setItem('user', JSON.stringify(data.user))
 
-                // Check role for admin tab
                 if (activeTab === 'admin') {
                     if (data.user.role === 'admin') {
                         router.replace('/admin')
                     } else {
                         setError('دسترسی فقط برای کارکنان مجاز است')
-                        // Remove token/user if not admin
                         localStorage.removeItem('token')
                         localStorage.removeItem('user')
                         return
                     }
                 } else {
-                    // Redirect to dashboard for normal users
-                router.replace('/dashboard')
+                    router.replace(getRedirectPath())
                 }
             } else {
                 setError(data.message || 'خطا در ورود')
@@ -81,13 +85,20 @@ export default function Login() {
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-md w-full space-y-8">
                 <div>
-                    <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                    <h2 className="mt-6 text-center text-2xl sm:text-3xl font-extrabold text-gray-900">
                         ورود به حساب کاربری
                     </h2>
+                    <p className="mt-2 text-center text-sm text-primary font-semibold">
+                        فروشگاه اینترنتی قطعات اینترنتی کامپیوتر پارس تک
+                    </p>
                     <p className="mt-2 text-center text-sm text-gray-600">
                         یا{' '}
                         <Link href="/register" className="font-medium text-primary hover:text-blue-500">
                             ثبت نام کنید
+                        </Link>
+                        {' · '}
+                        <Link href="/" className="font-medium text-primary hover:text-blue-500">
+                            بازگشت به فروشگاه
                         </Link>
                     </p>
                 </div>

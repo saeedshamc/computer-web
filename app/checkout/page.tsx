@@ -114,10 +114,10 @@ export default function Checkout() {
                 {/* Back to Dashboard Link */}
                 <button
                     type="button"
-                    onClick={() => router.push('/dashboard')}
+                    onClick={() => router.push('/')}
                     className="mb-4 sm:mb-6 text-primary hover:text-blue-700 font-medium text-sm transition-colors"
                 >
-                    ← بازگشت به صفحه محصولات
+                    ← بازگشت به صفحه اصلی
                 </button>
                 {/* Cart Summary */}
                 <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-2 sm:mb-4">سبد خرید شما</h2>

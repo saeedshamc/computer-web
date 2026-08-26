@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { FaShoppingCart, FaUser, FaSignOutAlt, FaHome, FaTimes, FaInfoCircle, FaBars, FaGlobe } from 'react-icons/fa'
+import { FaShoppingCart, FaUser, FaSignOutAlt, FaHome, FaTimes, FaInfoCircle, FaBars, FaGlobe, FaSignInAlt, FaUserPlus } from 'react-icons/fa'
+import { STORE_NAME } from '@/lib/brand'
 
 interface HeaderProps {
     onCartClick: () => void
@@ -17,10 +18,14 @@ export default function Header({ onCartClick, onProfileClick, onHomeClick, cartI
     const pathname = usePathname()
     const [showAbout, setShowAbout] = useState(false)
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+    useEffect(() => {
+        setIsLoggedIn(!!localStorage.getItem('token'))
+    }, [pathname])
 
     const handleLogout = async () => {
         try {
-            // Call logout API
             await fetch('/api/auth/logout', {
                 method: 'POST',
                 headers: {
@@ -28,25 +33,22 @@ export default function Header({ onCartClick, onProfileClick, onHomeClick, cartI
                 },
             })
 
-            // Clear localStorage
             localStorage.removeItem('token')
             localStorage.removeItem('user')
             localStorage.removeItem('cart')
-
-            // Redirect to login
-            router.push('/login')
+            setIsLoggedIn(false)
+            router.push('/')
         } catch (error) {
             console.error('Logout error:', error)
-            // Fallback: clear localStorage and redirect
             localStorage.removeItem('token')
             localStorage.removeItem('user')
             localStorage.removeItem('cart')
-            router.push('/login')
+            setIsLoggedIn(false)
+            router.push('/')
         }
     }
 
     const changeLanguage = (lang: string) => {
-        // Remove current locale from path if present
         const pathParts = pathname.split('/').filter(Boolean)
         const locales = ['fa', 'en', 'fr']
         if (locales.includes(pathParts[0])) {
@@ -56,16 +58,85 @@ export default function Header({ onCartClick, onProfileClick, onHomeClick, cartI
         router.push(newPath)
     }
 
+    const AuthActions = ({ mobile = false }: { mobile?: boolean }) => (
+        <>
+            {isLoggedIn ? (
+                <>
+                    <button
+                        onClick={onProfileClick}
+                        className="flex items-center space-x-2 space-x-reverse text-gray-600 hover:text-primary transition-colors font-bold"
+                        aria-label="پروفایل"
+                    >
+                        <FaUser className="h-5 w-5 text-primary" />
+                        <span>پروفایل</span>
+                    </button>
+
+                    <button
+                        onClick={handleLogout}
+                        className="flex items-center space-x-2 space-x-reverse text-red-600 hover:text-red-700 transition-colors font-bold"
+                        aria-label="خروج"
+                    >
+                        <FaSignOutAlt className="h-5 w-5 text-red-600" />
+                        <span>خروج</span>
+                    </button>
+                </>
+            ) : (
+                <>
+                    <button
+                        onClick={() => router.push('/login')}
+                        className="flex items-center space-x-2 space-x-reverse text-gray-600 hover:text-primary transition-colors font-bold"
+                        aria-label="ورود"
+                    >
+                        <FaSignInAlt className="h-5 w-5 text-primary" />
+                        <span>ورود</span>
+                    </button>
+
+                    <button
+                        onClick={() => router.push('/register')}
+                        className={`flex items-center space-x-2 space-x-reverse transition-colors font-bold ${mobile ? 'text-primary' : 'bg-primary text-white px-3 py-1.5 rounded-lg hover:bg-blue-700'}`}
+                        aria-label="ثبت‌نام"
+                    >
+                        <FaUserPlus className="h-5 w-5" />
+                        <span>ثبت‌نام</span>
+                    </button>
+                </>
+            )}
+        </>
+    )
+
+    const LanguageSwitcher = ({ id }: { id: string }) => (
+        <div className="flex items-center gap-1">
+            <FaGlobe className="h-5 w-5 text-primary" aria-hidden="true" />
+            <label htmlFor={id} className="sr-only">انتخاب زبان</label>
+            <select
+                id={id}
+                aria-label="انتخاب زبان"
+                className="border border-primary text-primary font-bold bg-white rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary hover:border-blue-700 transition-colors shadow-sm"
+                defaultValue={(() => {
+                    const locales = ['fa', 'en', 'fr']
+                    const pathParts = pathname.split('/').filter(Boolean)
+                    return locales.includes(pathParts[0]) ? pathParts[0] : 'fa'
+                })()}
+                onChange={e => changeLanguage(e.target.value)}
+            >
+                <option value="fa" className="text-gray-900">فارسی</option>
+                <option value="en" className="text-gray-900">English</option>
+                <option value="fr" className="text-gray-900">Français</option>
+            </select>
+        </div>
+    )
+
     return (
         <>
             <header className="sticky top-0 bg-white shadow-md relative z-50">
                 <div className="container mx-auto px-2 sm:px-4">
-                    <div className="flex items-center justify-between h-16">
-                        <div className="flex items-center space-x-2 sm:space-x-4 space-x-reverse">
-                            <h1 className="text-lg sm:text-xl font-bold text-primary">فروشگاه قطعات کامپیوتر</h1>
+                    <div className="flex items-center justify-between h-16 gap-2">
+                        <div className="flex items-center min-w-0 flex-1">
+                            <h1 className="text-xs sm:text-sm md:text-base lg:text-lg font-bold text-primary leading-snug truncate">
+                                {STORE_NAME}
+                            </h1>
                         </div>
-                        {/* Hamburger for mobile */}
-                        <div className="flex sm:hidden">
+                        <div className="flex sm:hidden shrink-0">
                             {mobileMenuOpen ? (
                                 <button
                                     type="button"
@@ -90,8 +161,7 @@ export default function Header({ onCartClick, onProfileClick, onHomeClick, cartI
                                 </button>
                             )}
                         </div>
-                        {/* Nav buttons for desktop */}
-                        <div className="hidden sm:flex items-center space-x-2 sm:space-x-4 space-x-reverse">
+                        <div className="hidden sm:flex items-center space-x-2 sm:space-x-4 space-x-reverse shrink-0">
                             <button
                                 onClick={() => setShowAbout(true)}
                                 className="flex items-center space-x-2 space-x-reverse text-gray-600 hover:text-primary transition-colors font-bold"
@@ -126,53 +196,13 @@ export default function Header({ onCartClick, onProfileClick, onHomeClick, cartI
                                 </button>
                             </div>
 
-                            <button
-                                onClick={onProfileClick}
-                                className="flex items-center space-x-2 space-x-reverse text-gray-600 hover:text-primary transition-colors font-bold"
-                                aria-label="پروفایل"
-                            >
-                                <FaUser className="h-5 w-5 text-primary" />
-                                <span>پروفایل</span>
-                            </button>
-
-                            <button
-                                onClick={handleLogout}
-                                className="flex items-center space-x-2 space-x-reverse text-red-600 hover:text-red-700 transition-colors font-bold"
-                                aria-label="خروج"
-                            >
-                                <FaSignOutAlt className="h-5 w-5 text-red-600" />
-                                <span>خروج</span>
-                            </button>
-
-                            {/* Language Switcher */}
-                            <div className="flex items-center gap-1">
-                                <FaGlobe className="h-5 w-5 text-primary" aria-label="انتخاب زبان" />
-                                <label htmlFor="lang-select" className="sr-only">انتخاب زبان</label>
-                                <select
-                                    id="lang-select"
-                                    aria-label="انتخاب زبان"
-                                    className="border border-primary text-primary font-bold bg-white rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary hover:border-blue-700 transition-colors shadow-sm"
-                                    defaultValue={(() => {
-                                        const locales = ['fa', 'en', 'fr']
-                                        const pathParts = pathname.split('/').filter(Boolean)
-                                        return locales.includes(pathParts[0]) ? pathParts[0] : 'fa'
-                                    })()}
-                                    onChange={e => changeLanguage(e.target.value)}
-                                >
-                                    <option value="fa" className="text-gray-900">فارسی</option>
-                                    <option value="en" className="text-gray-900">English</option>
-                                    <option value="fr" className="text-gray-900">Français</option>
-                                </select>
-                            </div>
-                            {/* End Language Switcher */}
+                            <AuthActions />
+                            <LanguageSwitcher id="lang-select" />
                         </div>
                     </div>
-                    {/* Mobile menu dropdown */}
                     {mobileMenuOpen && (
                         <>
-                            {/* Overlay */}
                             <div className="fixed inset-0 bg-black bg-opacity-30 z-40" onClick={() => setMobileMenuOpen(false)}></div>
-                            {/* Mobile menu dropdown */}
                             <div id="mobile-menu" className="sm:hidden flex flex-col gap-2 mt-2 bg-white rounded shadow p-4 z-50 fixed top-4 right-4 left-4 max-h-[80vh] overflow-y-auto animate-fade-in">
                                 <div className="flex justify-end mb-2">
                                     <button onClick={() => setMobileMenuOpen(false)} className="text-gray-500 hover:text-red-600 transition-colors" aria-label="بستن منو">
@@ -213,45 +243,10 @@ export default function Header({ onCartClick, onProfileClick, onHomeClick, cartI
                                     </button>
                                 </div>
 
-                                <button
-                                    onClick={onProfileClick}
-                                    className="flex items-center space-x-2 space-x-reverse text-gray-600 hover:text-primary transition-colors font-bold"
-                                    aria-label="پروفایل"
-                                >
-                                    <FaUser className="h-5 w-5 text-primary" />
-                                    <span>پروفایل</span>
-                                </button>
-
-                                <button
-                                    onClick={handleLogout}
-                                    className="flex items-center space-x-2 space-x-reverse text-red-600 hover:text-red-700 transition-colors font-bold"
-                                    aria-label="خروج"
-                                >
-                                    <FaSignOutAlt className="h-5 w-5 text-red-600" />
-                                    <span>خروج</span>
-                                </button>
-
-                                {/* Language Switcher */}
-                                <div className="flex items-center gap-1 mt-2">
-                                    <FaGlobe className="h-5 w-5 text-primary" aria-label="انتخاب زبان" />
-                                    <label htmlFor="lang-select-mobile" className="sr-only">انتخاب زبان</label>
-                                    <select
-                                        id="lang-select-mobile"
-                                        aria-label="انتخاب زبان"
-                                        className="border border-primary text-primary font-bold bg-white rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary hover:border-blue-700 transition-colors shadow-sm"
-                                        defaultValue={(() => {
-                                            const locales = ['fa', 'en', 'fr']
-                                            const pathParts = pathname.split('/').filter(Boolean)
-                                            return locales.includes(pathParts[0]) ? pathParts[0] : 'fa'
-                                        })()}
-                                        onChange={e => changeLanguage(e.target.value)}
-                                    >
-                                        <option value="fa" className="text-gray-900">فارسی</option>
-                                        <option value="en" className="text-gray-900">English</option>
-                                        <option value="fr" className="text-gray-900">Français</option>
-                                    </select>
+                                <AuthActions mobile />
+                                <div className="mt-2">
+                                    <LanguageSwitcher id="lang-select-mobile" />
                                 </div>
-                                {/* End Language Switcher */}
                             </div>
                         </>
                     )}
@@ -268,13 +263,13 @@ export default function Header({ onCartClick, onProfileClick, onHomeClick, cartI
                         >
                             <FaTimes />
                         </button>
-                        <h2 className="text-2xl font-bold mb-4 text-primary">درباره فروشگاه ما</h2>
+                        <h2 className="text-xl font-bold mb-4 text-primary">{STORE_NAME}</h2>
                         <p className="text-gray-700 leading-relaxed text-justify">
-                            فروشگاه قطعات کامپیوتر ما با هدف ارائه بهترین و جدیدترین قطعات سخت‌افزاری، تجربه‌ای مطمئن و لذت‌بخش از خرید آنلاین را برای مشتریان فراهم می‌کند. ما با ارائه محصولات اورجینال، قیمت مناسب، ارسال سریع و پشتیبانی تخصصی، همواره در کنار شما هستیم تا بهترین انتخاب را برای ارتقاء یا اسمبل سیستم خود داشته باشید. رضایت و اعتماد شما، بزرگ‌ترین سرمایه ماست.
+                            {STORE_NAME} با هدف ارائه بهترین و جدیدترین قطعات سخت‌افزاری، تجربه‌ای مطمئن و لذت‌بخش از خرید آنلاین را برای مشتریان فراهم می‌کند. ما با ارائه محصولات اورجینال، قیمت مناسب، ارسال سریع و پشتیبانی تخصصی، همواره در کنار شما هستیم تا بهترین انتخاب را برای ارتقاء یا اسمبل سیستم خود داشته باشید. رضایت و اعتماد شما، بزرگ‌ترین سرمایه ماست.
                         </p>
                     </div>
                 </div>
             )}
         </>
     )
-} 
+}

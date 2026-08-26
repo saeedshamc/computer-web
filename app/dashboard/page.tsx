@@ -6,6 +6,7 @@ import Header from '@/components/Header'
 import ProductCard from '@/components/ProductCard'
 import { FaChevronLeft, FaChevronRight, FaShoppingCart, FaUser, FaHome, FaSearch, FaChevronDown } from 'react-icons/fa'
 import { loadUserCart, saveUserCart, CartItem } from '@/lib/cartClient'
+import { STORE_NAME, STORE_TAGLINE } from '@/lib/brand'
 
 interface Product {
     _id: string
@@ -65,25 +66,30 @@ export default function Dashboard() {
     ]
 
     useEffect(() => {
-        // Check if user is logged in
-        const token = localStorage.getItem('token')
-        if (!token) {
-            router.replace('/login')
-            return
-        }
-
         fetchProducts()
-        loadUserCart().then(loadedCart => {
-            setCart(loadedCart)
-            setCartLoaded(true)
-        })
+
+        const token = localStorage.getItem('token')
+        if (token) {
+            loadUserCart().then(loadedCart => {
+                setCart(loadedCart)
+                setCartLoaded(true)
+            })
+        } else {
+            setCart([])
+            setCartLoaded(false)
+        }
     }, [router])
 
-    // Sync cart to server whenever it changes (after initial load)
+    // Sync cart to server whenever it changes (after initial load, logged-in only)
     useEffect(() => {
         if (!cartLoaded) return
+        if (!localStorage.getItem('token')) return
         saveUserCart(cart)
     }, [cart, cartLoaded]);
+
+    const requireLogin = (redirectPath = '/') => {
+        router.push(`/login?redirect=${encodeURIComponent(redirectPath)}`)
+    }
 
     // Close dropdown on outside click
     useEffect(() => {
@@ -117,6 +123,11 @@ export default function Dashboard() {
     }
 
     const addToCart = (product: Product, quantity: number) => {
+        if (!localStorage.getItem('token')) {
+            requireLogin('/')
+            return
+        }
+
         setCart(prevCart => {
             const existingItem = prevCart.find(item => item.product._id === product._id)
             if (existingItem) {
@@ -132,8 +143,6 @@ export default function Dashboard() {
         })
         setCartBounce(true)
         setTimeout(() => setCartBounce(false), 500)
-        // Show success message
-        console.log(`${product.name} به سبد خرید اضافه شد`)
     }
 
     const removeFromCart = (productId: string) => {
@@ -393,9 +402,21 @@ export default function Dashboard() {
     return (
         <div className="min-h-screen bg-gray-50">
             <Header
-                onCartClick={() => setShowCart(true)}
-                onProfileClick={() => router.push('/profile')}
-                onHomeClick={() => router.push('/dashboard')}
+                onCartClick={() => {
+                    if (!localStorage.getItem('token')) {
+                        requireLogin('/checkout')
+                        return
+                    }
+                    setShowCart(true)
+                }}
+                onProfileClick={() => {
+                    if (!localStorage.getItem('token')) {
+                        requireLogin('/profile')
+                        return
+                    }
+                    router.push('/profile')
+                }}
+                onHomeClick={() => router.push('/')}
                 cartItemCount={cart.length}
                 cartBounce={cartBounce}
             />
@@ -443,8 +464,12 @@ export default function Dashboard() {
                                 <button
                                     className="w-full bg-primary text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-bold mt-6"
                                     onClick={() => {
-                                        setShowCart(false);
-                                        router.push('/checkout');
+                                        setShowCart(false)
+                                        if (!localStorage.getItem('token')) {
+                                            requireLogin('/checkout')
+                                            return
+                                        }
+                                        router.push('/checkout')
                                     }}
                                 >
                                     ادامه فرایند خرید
@@ -457,8 +482,8 @@ export default function Dashboard() {
 
             <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
                 <div className="text-center mb-6 sm:mb-8">
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">فروشگاه قطعات و لپ‌تاپ</h1>
-                    <p className="text-gray-600 text-sm sm:text-base">بهترین قطعات کامپیوتر و انواع لپ‌تاپ با بهترین قیمت</p>
+                    <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-2">{STORE_NAME}</h1>
+                    <p className="text-gray-600 text-sm sm:text-base">{STORE_TAGLINE}</p>
                 </div>
 
                 {/* Search Bar */}
